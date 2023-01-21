@@ -6,11 +6,11 @@
 # Date: 17/02/2022
 #-------------------------------------------------------------------
 import time, datetime
+import smach
+import smach_ros
 import sys
 import rospy
 from std_msgs.msg import String, Float64
-import smach
-import smach_ros
 import roslib
 from happymimi_msgs.srv import StrTrg
 sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
