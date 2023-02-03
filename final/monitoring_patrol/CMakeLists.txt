@@ -60,7 +60,7 @@ add_service_files(
   DIRECTORY
   srv
   FILES
-  locationInfo.srv
+  AedLocationInfo.srv
   )
 
 ## Generate actions in the 'action' folder

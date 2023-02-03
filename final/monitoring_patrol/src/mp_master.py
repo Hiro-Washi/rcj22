@@ -1,44 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------
-# Desc: 
-# Author: Hiroto Washio
-# Date: 17/02/2022
-#-------------------------------------------------------------------
+
+# 現状　　： 介護職員数は平成１２年の約５５万人から平成１７年の約１１２万人と約２倍になってる
+# 想定順序： 介護施設・病院 > 高齢者住まいの自宅（ロボットの導入コスト的にこの環境が多い？）
+# 　　　　　 全国の医療施設数：179,090
+# 　　　　　 全国の介護施設数：179,090
+# ：
+
+
 import time, datetime
-import smach
-import smach_ros
 import sys
+
+# ROS ----------------------
 import rospy
 from std_msgs.msg import String, Float64
-import roslib
-from happymimi_msgs.srv import StrTrg
-sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
-#from common_action_client import *
-#from common_function import *
-#from mimi_common_pkg.srv import ManipulateSrv, RecognizeCount
-sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_voice_control/src')
-from happymimi_voice_msgs.srv import *
-from geometry_msgs.msg import Twist
-from happymimi_navigation.srv import NaviLocation
-from happymimi_recognition_msgs.srv import RecognitionFind, RecognitionFindRequest, RecognitionLocalizeRequest
-base_path = roslib.packages.get_pkg_dir('happymimi_teleop') + '/src/'
-sys.path.insert(0, base_path)
-from base_control import BaseControl
-reco_path = roslib.packages.get_pkg_dir('recognition_processing') + '/src/'
-sys.path.insert(0, reco_path)
-from recognition_tools import RecognitionTools
-import roslib.packages
-happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/aram.wav"
-sec_happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/ga9du-ecghy2.wav"
-from real_time_navi.srv import RealTimeNavi
-from playsound import playsound
-from send_gmail.srv import SendGmail
-tts_srv = rospy.ServiceProxy('/tts', StrTrg)
-rt = RecognitionTools()
+
+#ActionServer
+from smach_ros import ActionServerWrapper
+from mp_master import MpAction
+
+#-----------------------------
+
+# from happymimi_msgs.srv import StrTrg
+# sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
+# sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_voice_control/src')
+# from happymimi_voice_msgs.srv import *
+# from geometry_msgs.msg import Twist
+# from happymimi_navigation.srv import NaviLocation
+# from happymimi_recognition_msgs.srv import RecognitionFind, RecognitionFindRequest, RecognitionLocalizeRequest
+# base_path = roslib.packages.get_pkg_dir('happymimi_teleop') + '/src/'
+# sys.path.insert(0, base_path)
+# from base_control import BaseControl
+# reco_path = roslib.packages.get_pkg_dir('recognition_processing') + '/src/'
+# sys.path.insert(0, reco_path)
+# from recognition_tools import RecognitionTools
+# import roslib.packages
+# happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/aram.wav"
+# sec_happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/ga9du-ecghy2.wav"
+# from real_time_navi.srv import RealTimeNavi
+# from playsound import playsound
+# from send_gmail.srv import SendGmail
+# tts_srv = rospy.ServiceProxy('/tts', StrTrg)
+# rt = RecognitionTools()
 #import pyaudio
 #now_dt = datetime.datetime.today()
 
+# 
 class Start(smach.State):
     def __init__(self):
         smach.State.__init__(self, outcomes = ['start_finish'])
@@ -234,6 +241,46 @@ class Exit(smach.State):
         tts_srv("finish confirming")
         return 'all_finish'
 
+
+def mpSmach():
+  demo_mp_sm_top = smach.StateMachine(outcomes = ["mp_succeeded",
+                                                  "mp_aborted",
+                                                  "mp_preempted"])
+  
+def createNode(node_name):
+  rospy.init_node(node_name)
+  rospy.loginfo('Ready to start **%s**', node_name)
+  
+# accoding to original start timer setting
+#def actualMain():
+#  createNode()
+  
+# デモでパトロールをすぐに実行
+def demoMain():
+  createNode("mp_demo")
+  mpSmach()
+  
+  
+
+
+# 定位置についてパトロールを実行（mp_mode：外部で一定間隔の時間に基づいた実行）
+# goal-->     確認する住人の設定数、
+# Response--> 
+# Feedback--> Smachステート
+# !!! どうしたらAbortedになるか調べる
+def runMpAcserver():
+  createNode("mp_acserver")
+  MP_SM = mpSmach()
+  ASW = ActionServerWrapper('mp_master_acserver', MpAction,
+                             wrapped_container  = MP_SM.demo_mp_sm_top,
+                             succeeded_outcomes = ['mp_succeeded'],
+                             aborted_outcomes   = ['mp_aborted'],
+                             preempted_outcomes = ['mp_preempted'],
+                             goal_key = 'goal_message',
+                             result_key = 'result_message')
+  
+  
+  
 if __name__ == '__main__':
     rospy.init_node('falling_down_resc')
     rospy.loginfo('Start informing people lying down')
