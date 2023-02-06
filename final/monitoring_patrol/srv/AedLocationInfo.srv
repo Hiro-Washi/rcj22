@@ -1,13 +1,16 @@
 # Empty
+string location_name
+uint16 radius
 ---
-int accuracy
+bool  result
+uint8 aed_num
 
-string continent_code
-string country_code
-string country
+uint16 dist
+
+string location_name
 string prefecture
 string city
-string organization_name
+string address_area
 
 float64 latitude
 float64 longitude
