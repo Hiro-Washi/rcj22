@@ -13,7 +13,7 @@ private:
 public: //!!
   ImageConverter();
   ~ImageConverter();
-  
+
 
 }
 // from position_estimator.cpp.        http://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html
@@ -23,10 +23,10 @@ bool ::convertImage(const sensor_msgs::ImageConstPtr& input_image,
   try{
     // ROSからOpenCVの形式にtoCvCopy()で変換。cv_ptr->imageがcv::Matフォーマット
     // ros image msg -> cv_bridge -> cv::Mat                               	0 ~ 65535 !!
-    _cv_ptr = cv_bridge::toCvCopy(input_image, sensor_msgs::image_encodings::TYPE_16UC1);
+    //_cv_ptr = cv_bridge::toCvCopy(input_image, sensor_msgs::image_encodings::TYPE_16UC1);
     bgr8_cv_ptr = cv_bridge::toCvCopy(input_image, sensor_msgs::image_encodings::BGR8);
-    mono8_cv_ptr = cv_bridge::toCvCopy(input_image, sensor_msgs::image_encodings::MONO8);
-    output_image = cv_ptr->image;
+    //mono8_cv_ptr = cv_bridge::toCvCopy(input_image, sensor_msgs::image_encodings::MONO8);
+    //output_image = cv_ptr->image;
 
     /* 画像出力
     cv::imshow("Image_window", output_image);
