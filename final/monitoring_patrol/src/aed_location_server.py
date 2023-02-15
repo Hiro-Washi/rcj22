@@ -40,7 +40,7 @@ class AedLocationServer():
       return True
     else: return False
   
-  # return nearest AED location. Goejs 
+  # return nearest AED location.
   def aedLocInfoCB(self, req):
     rospy.loginfo('AED location server: GET Service Request')
     res = AedlocationInfoResponse()
