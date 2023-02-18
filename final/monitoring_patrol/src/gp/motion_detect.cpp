@@ -2,7 +2,7 @@
 // detect whether a lying human moved
 //
 
-#include <ros.h>
+#include <ros/ros.h>
 
 #include <cv_bridge/cv_bridge.h>
 //#include "gp/image_converter.hpp"

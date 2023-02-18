@@ -8,7 +8,7 @@ uint8 aed_num
 uint16 dist
 
 string location_name
-string prefecture
+#string prefecture
 string city
 string address_area
 

@@ -108,7 +108,7 @@ class SearchPerson(smach.State):
                 rospy.loginfo('finish moving to another place')
                 return 'not_found_one'
             elif navi_counter > 1:
-                print("found no person again")
+                print"found no person again"
                 tts_srv("Found no person again. He is out of this house now")
                 return 'not_found_two'
 
@@ -128,7 +128,7 @@ class TalkAndAlert(smach.State):
             self.find_result = self.find_srv(RecognitionFindRequest(target_name='person')).result
             # 人が居なかった場合
             if self.find_result == False:
-                print('The person is away here')
+                print 'The person is away here'
                 tts_srv("You are out of my eyes. You probably woke up")
                 return 'to_exit'
             #　人を見つけた場合
@@ -138,7 +138,7 @@ class TalkAndAlert(smach.State):
             request.target_name = "person"
             centroid = rt.localizeObject(request).point
             person_height = centroid.z
-            print(person_height)
+            print person_height
             standard_z = 0.4
             #if person_height > standard_z or yes_no_result == True or yes_no_result == False:  #　voice
             #　見つけた人が立っていた場合
@@ -155,7 +155,7 @@ class TalkAndAlert(smach.State):
         else:
             for i in range(3):
                 playsound(happymimi_voice_path)
-                print('send mail for help')
+                print 'send mail for help'
                 self.mail_srv('kit.robocup.home@gmail.com',
                               'gewretvedgpzlobj',
                              ['c1100781@planet.kanazawa-it.ac.jp',
@@ -168,7 +168,7 @@ class TalkAndAlert(smach.State):
                 request.target_name = "person"
                 centroid = rt.localizeObject(request).point
                 person_height = centroid.z
-                print(person_height)
+                print person_height
                 standard_z = 0.4
                 
                 if person_height > standard_z:
