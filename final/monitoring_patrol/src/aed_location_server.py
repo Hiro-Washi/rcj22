@@ -27,7 +27,7 @@ class AedLocationServer():
     rospy.Service('/info/near_aed_location', AedLocationInfo, self.aedLocInfoCB)
 
     # accuracy of this is so bad 
-    self.geocoord_dict = rosparam.get_param("/geo_coord_dict") #!!!
+    self.geocoord_dict = rosparam.get_param("/aed_location_info/geo_coord_dict") #!!!
     self.req = ""
     self.tar_geocoord = ""
   # 
@@ -48,7 +48,7 @@ class AedLocationServer():
     if self.searchLocationName(req.location_name): pass
     else : 
       rospy.loginfo("AED location server: The location name doesn't exist")
-      return res.result == False #!!! ï¿½I
+      return res.result == False #!!! ?¿½I
     
     # create URL
     self.tar_geocoord_list = self.geocoord_dict[req.location_name]
@@ -61,7 +61,7 @@ class AedLocationServer():
       api_res.raise_for_status()
     except requests.exceptions.HTTPError:
       rospy.loginfo("AED location server: HTTPError")
-      return res.result == False #!!! ï¿½I
+      return res.result == False #!!! ?¿½I
     
     # if get success status
     rospy.loginfo("AED location server: GET SUCCESS Status Code")

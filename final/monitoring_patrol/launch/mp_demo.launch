@@ -1,10 +1,17 @@
 <!-- -*- mode: XML -*- -->
 <launch>
-  <rosparam file="$(find monitoring_patrol)/param/geo_coord_dict.yaml" command="load" ns="geo_coord_dict"/>
+  <arg name="map_name" default="rcj_2022_yumeko2"/>
 
   <!-- <node pkg="monitoring_patrol" name="mp_demo" type="mp_demo.py" output="screen" /> -->
   <!-- <node pkg="monitoring_patrol" name="ad_navi_server" type="ad_navi_server.py" output="screen" /> -->
   <!-- <node pkg="monitoring_patrol" name="mp_demo" type="mp_demo.py" output="screen" /> -->
   <node pkg="monitoring_patrol" name="aed_location_server" type="aed_location_server.py" output="screen" />
+    <rosparam ns="/aed_lotion_info/geo_coord_dict" file="$(find monitoring_patrol)/param/geo_coord_dict.yaml" command="load"/>
+  <node pkg="monitoring_patrol" name="ad_navi_server" type="ad_navi_server.py" output="screen" />
+    <rosparam ns="/ad_navi_param" file="$(find monitoring_patrol)/param/ad_navi_param.yaml" command="load"/>
+    <rosparam ns="/location_dict" file="$(find happymimi_params)/location/$(arg map_name).yaml" command="load"/> 
+    <rosparam file="$(find happymimi_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    
+  <node pkg="monitoring_patrol" name="mp_demo" type="mp_demo.py" output="screen" />
 
 </launch>

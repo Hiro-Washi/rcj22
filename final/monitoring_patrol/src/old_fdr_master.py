@@ -17,17 +17,22 @@ sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_common_pkg/scripts')
 #from common_action_client import *
 #from common_function import *
 #from mimi_common_pkg.srv import ManipulateSrv, RecognizeCount
-sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_voice_control/src')
-from happymimi_voice_msgs.srv import *
+
 from geometry_msgs.msg import Twist
 from happymimi_navigation.srv import NaviLocation
-from happymimi_recognition_msgs.srv import RecognitionFind, RecognitionFindRequest, RecognitionLocalizeRequest
 base_path = roslib.packages.get_pkg_dir('happymimi_teleop') + '/src/'
 sys.path.insert(0, base_path)
 from base_control import BaseControl
+# RECOGNITION
+from happymimi_recognition_msgs.srv import (RecognitionFind, 
+                                            RecognitionFindRequest, 
+                                            RecognitionLocalizeRequest)
 reco_path = roslib.packages.get_pkg_dir('recognition_processing') + '/src/'
 sys.path.insert(0, reco_path)
 from recognition_tools import RecognitionTools
+# VOICE
+sys.path.insert(0, '/home/athome/catkin_ws/src/mimi_voice_control/src')
+from happymimi_voice_msgs.srv import *
 import roslib.packages
 happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/aram.wav"
 sec_happymimi_voice_path = roslib.packages.get_pkg_dir("happymimi_voice")+"/../config/wave_data/ga9du-ecghy2.wav"
@@ -47,7 +52,7 @@ class Start(smach.State):
 
     def execute(self, userdata):
         rospy.loginfo("Executing state: Start")
-        tts_srv("It's time to confirm")
+        tts_srv("Start patrol")
         self.navi_srv('first_search_point')
         return 'start_finish'
 
@@ -90,14 +95,14 @@ class SearchPerson(smach.State):
                 #now_time = now_dt.time()
                 #print now_dt
                 #print now_time
-                tts_srv("What's up. Howdy?")
+                tts_srv("What's up?")
                 return 'found_standing'
             else:
-                tts_srv("Hi!,,,Oh! you lying down!")
+                tts_srv("Hi!,,,Oh! Found a person lying down!")
                 target_name = 'lying_person'
                 self.real_time_navi('set')
                 return 'found_lying'
-            # 人が居ない場合
+            # 人が�?な�?場�?
         elif self.find_result == False:
             print("found a person.")
             tts_srv("found no person.")
@@ -126,12 +131,12 @@ class TalkAndAlert(smach.State):
             tts_srv("Are you sleeping")
             #yes_no_result = self.yes_no_srv().result#####
             self.find_result = self.find_srv(RecognitionFindRequest(target_name='person')).result
-            # 人が居なかった場合
+            # 人が�?なかった�?��?
             if self.find_result == False:
                 print 'The person is away here'
                 tts_srv("You are out of my eyes. You probably woke up")
                 return 'to_exit'
-            #　人を見つけた場合
+            #　人を見つけた場�?
             elif self.find_result == True:
                 pass
             request = RecognitionLocalizeRequest()
@@ -141,7 +146,7 @@ class TalkAndAlert(smach.State):
             print person_height
             standard_z = 0.4
             #if person_height > standard_z or yes_no_result == True or yes_no_result == False:  #　voice
-            #　見つけた人が立っていた場合
+            #　見つけた人が立って�?た�?��?
             if person_height > standard_z :
                 self.head_pub.publish(0)
                 print("Confirm that you are awake")
@@ -151,7 +156,7 @@ class TalkAndAlert(smach.State):
                 break
             else:
                 pass
-        #　立たない、応答がない場合
+        #　立たな�?、応答がな�?場�?
         else:
             for i in range(3):
                 playsound(happymimi_voice_path)
@@ -161,7 +166,7 @@ class TalkAndAlert(smach.State):
                              ['c1100781@planet.kanazawa-it.ac.jp',
                               'c1115332@planet.kanazawa-it.ac.jp'],
                               '【KitHappyRobot】人名に関するお知らせ',
-                              '家で人が意識不明の状態で倒れています。' + '至急、救急車を呼んでください。',
+                              '家で人が意識不�?��?�状態で倒れて�?ます�?' + '至急、救急車を呼んでください�?',
                              )
                 tts_srv("A person is lying down and lose conciousness")
                 request = RecognitionLocalizeRequest()
