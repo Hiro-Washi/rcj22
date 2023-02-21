@@ -11,6 +11,8 @@
 
 # API point : latitude":"36.5968 longitude":"136.5998"
 
+import codecs
+import json
 from yaml import load
 import requests
 import rospy
@@ -27,7 +29,7 @@ class AedLocationServer():
     rospy.Service('/info/near_aed_location', AedLocationInfo, self.aedLocInfoCB)
 
     # accuracy of this is so bad 
-    self.geocoord_dict = rosparam.get_param("/aed_location_info/geo_coord_dict") #!!!
+    self.geocoord_dict = rosparam.get_param("/geo_coord_dict") #!!!
     self.req = ""
     self.tar_geocoord = ""
   # 
@@ -65,6 +67,27 @@ class AedLocationServer():
     
     # if get success status
     rospy.loginfo("AED location server: GET SUCCESS Status Code")
+    
+    #print(api_data)
+    # ファイル書き込み先用オブジェクトを生成
+    # なお、これよりもwith句を用いたほうが、クローズ忘れを防げます
+    #JSONFile = 'near_aed_data.json'
+    #fw = codecs.open(JSONFile , 'w', 'utf-8')
+    # JSON書き出し
+    #nearest_aed_dict = api_data[0]
+    #json.dump(nearest_aed_dict, fw, ensure_ascii=False)
+    
+    #file1 = open(JSONFile, 'r', encoding="utf-8")
+    #print(file1)
+
+    #with open(JSONFile, 'r', encodinf="utf-8") as f:
+    #    file_read = f.read()
+    #file_read
+
+    # 書き込みオブジェクトを閉じる
+    #fw.close()
+
+
     
     # confirm api_data has any elements
     if 0 < len(api_data): pass

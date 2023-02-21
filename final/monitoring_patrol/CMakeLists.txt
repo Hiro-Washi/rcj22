@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   rosparam
   std_msgs
+  geometry_msgs
   std_srvs
   actionlib
   actionlib_msgs
@@ -23,8 +24,11 @@ find_package(catkin REQUIRED COMPONENTS
   happymimi_msgs
   #happymimi_manipulation_msgs
   #happymimi_navigation_msgs
+  
+  genmsg
   message_generation
 )
+
 find_package(OpenCV REQUIRED)
 
 # add_message_files(
@@ -33,32 +37,32 @@ find_package(OpenCV REQUIRED)
 #   Message2.msg
 # )
 
-add_service_files(
-  DIRECTORY
-  srv
+add_service_files(DIRECTORY srv
   FILES
   AedLocationInfo.srv
   GeoLocationInfo.srv
   DetectMotion.srv
   AdNaviSrv.srv
-  )
+)
 
-add_action_files(
-  DIRECTORY
-  action
+add_action_files(DIRECTORY action
   FILES
-  MpAction.action
-
+  MpAct.action
+  AdNaviAct.action
+  DetectTargetAct.action
 )
 
 generate_messages(
-  DEPENDENCIES std_msgs
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+  actionlib_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES monitoring_patrol
-  CATKIN_DEPENDS roscpp rospy std_msgs massage_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs #massage_runtime
 #  DEPENDS system_lib
 )
 
@@ -70,6 +74,11 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+)
+
+catkin_install_python(
+  PROGRAMS src/test/fdr_master_test.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ## Declare a C++ library
